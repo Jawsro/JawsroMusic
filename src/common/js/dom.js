@@ -1,14 +1,4 @@
-// export function getData(el,name,value){
-//     const prefix="data-"
-//     name=prefix+name
-//     if(value){
-//         return el.setAttribute(name,value)
-//     }else{
-//         return el.getAttribute(name)
-//     }
-// }
-// 
-export function hasClass (el, className) {
+ export function hasClass (el, className) {
   return el.classList.contains(className)
 }
 

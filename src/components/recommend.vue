@@ -4,7 +4,9 @@
       <div>
         <van-swipe :autoplay="3000">
           <van-swipe-item v-for="(image, index) in PicUrl" :key="index">
-            <img v-lazy="image.picUrl" @load="loadImg()"/>
+            <a :href="image.linkUrl">
+              <img :src="image.picUrl" @load="loadImg()"/>
+            </a>
           </van-swipe-item>
         </van-swipe>
         <div class="title">热门歌单推荐</div>
@@ -28,7 +30,7 @@
         <loading></loading>
       </div>
     </scroll>
-    
+    <router-view/>
   </div> 
 </template>
 <script>
@@ -37,6 +39,9 @@ import { Lazyload } from 'vant';
 Vue.use(Lazyload);
 import Scroll from '../base/scroll/scroll'
 import Loading from '../base/loading/loading'
+import { getRecommend, getDiscList } from 'api/recommend'
+import { ERR_OK } from 'api/config'
+import { mapMutations } from 'vuex'
 export default {
   data() {
       return {
@@ -55,30 +60,40 @@ export default {
   methods:{
     gotoGedanlist(item){
       console.log(item)
-      // this.$router.push({
-      //   path:`/recommend/${item.dissid}`
-      // })
-    },
-    getList(){
-      this.$ajax.get("http://ustbhuangyi.com/music/api/getDiscList?g_tk=1928093487&inCharset=utf-8&outCharset=utf-8&notice=0&format=json&platform=yqq&hostUin=0&sin=0&ein=29&sortId=5&needNewCode=0&categoryId=10000000&rnd=0.7699859451579913")
-      .then(res=>{
-        //console.log(res.data.data.list)
-        this.gedanList=res.data.data.list
+      this.$router.push({
+        path:`/recommend/${item.dissid}`
       })
+     this.setDisc(item)
     },
     getPicUrl(){
-      this.$ajax.get("http://ustbhuangyi.com/music/api/getTopBanner?g_tk=1928093487&inCharset=utf8&outCharset=utf-8&notice=0&format=json&platform=yqq.json&hostUin=0&needNewCode=0&-=recom8256750917833617&data=%7B%22comm%22:%7B%22ct%22:24%7D,%22category%22:%7B%22method%22:%22get_hot_category%22,%22param%22:%7B%22qq%22:%22%22%7D,%22module%22:%22music.web_category_svr%22%7D,%22recomPlaylist%22:%7B%22method%22:%22get_hot_recommend%22,%22param%22:%7B%22async%22:1,%22cmd%22:2%7D,%22module%22:%22playlist.HotRecommendServer%22%7D,%22playlist%22:%7B%22method%22:%22get_playlist_by_category%22,%22param%22:%7B%22id%22:8,%22curPage%22:1,%22size%22:40,%22order%22:5,%22titleid%22:8%7D,%22module%22:%22playlist.PlayListPlazaServer%22%7D,%22new_song%22:%7B%22module%22:%22newsong.NewSongServer%22,%22method%22:%22get_new_song_info%22,%22param%22:%7B%22type%22:5%7D%7D,%22new_album%22:%7B%22module%22:%22newalbum.NewAlbumServer%22,%22method%22:%22get_new_album_info%22,%22param%22:%7B%22area%22:1,%22sin%22:0,%22num%22:10%7D%7D,%22new_album_tag%22:%7B%22module%22:%22newalbum.NewAlbumServer%22,%22method%22:%22get_new_album_area%22,%22param%22:%7B%7D%7D,%22toplist%22:%7B%22module%22:%22musicToplist.ToplistInfoServer%22,%22method%22:%22GetAll%22,%22param%22:%7B%7D%7D,%22focus%22:%7B%22module%22:%22QQMusic.MusichallServer%22,%22method%22:%22GetFocus%22,%22param%22:%7B%7D%7D%7D")
-      .then(res=>{
-        //console.log(res.data.data.slider);
-        this.PicUrl=res.data.data.slider
-      })
+      // this.$ajax.get("http://ustbhuangyi.com/music/api/getDiscList?g_tk=1928093487&inCharset=utf-8&outCharset=utf-8&notice=0&format=json&platform=yqq&hostUin=0&sin=0&ein=29&sortId=5&needNewCode=0&categoryId=10000000&rnd=0.7699859451579913")
+      // .then(res=>{
+      //   //console.log(res.data.data.list)
+      //   this.gedanList=res.data.data.list
+      // })
+       getRecommend().then((res) => {
+          if (res.code === ERR_OK) {
+            //console.log(res.data.slider)
+            this.PicUrl = res.data.slider
+          }
+        })
+    },
+    getList(){
+       getDiscList().then((res) => {
+          if (res.code === ERR_OK) {
+           this.gedanList = res.data.list
+          }
+        })
     },
     loadImg(){
       if(!this.checkLoaded){
         this.$refs.scroll.refresh();
         this.checkLoaded=true
       }
-    }
+    },
+     ...mapMutations({
+        setDisc: 'SET_DISC'
+      })
   }
 }
 </script>

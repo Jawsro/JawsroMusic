@@ -6,6 +6,7 @@ import Search from '../../src/components/search.vue'//搜索
 import Singer from '../../src/components/singer.vue'//歌手
 import SingerDetail from '../../src/components/singer-detail.vue'//歌手详情列表
 import Gedanlist from '../../src/components/gedanlist.vue'//歌单分类列表
+import Dic from '../../src/components/dic.vue'//歌单分类列表
 Vue.use(Router)
 
 export default new Router({
@@ -23,7 +24,7 @@ export default new Router({
       component: Recommend,
       children:[{
         path:':id',
-        component:Gedanlist
+        component:Dic
       }]
     },
     {//搜索
@@ -40,9 +41,5 @@ export default new Router({
         }
       ]
     },
-    // {//歌单分类列表
-    //   path: '/gedanlist/:id',
-    //   component: Gedanlist
-    // }
   ]
 })

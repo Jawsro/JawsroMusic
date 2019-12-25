@@ -1,4 +1,4 @@
-<template>
+<template><!--歌手的歌单列表组件--->
     <div class="song-list">
         <ul class="ul">
             <li v-for="(item,index) in song" :key="index" class="list">

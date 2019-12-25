@@ -1,5 +1,5 @@
 <template>
-
+<!-- 歌手列表组件 -->
     <scroll class="singer-container" 
             :data="data" 
             ref="listview"
@@ -32,11 +32,11 @@
         </div>
         
         <div class="alist" 
-            @touchstart="onTouchstart"
+            @touchstart.stop.prevent="onTouchstart"
             @touchmove.stop.prevent="onTouchmove"
-            >
+            @touchend.stop>
             <ul >
-                <li v-for="(item,index) in list" 
+                <li v-for="(item,index) in shortcutList " 
                     :key="index" 
                     class="list"
                     :data-index="index"
@@ -86,7 +86,12 @@ export default{
         list:Array
     },
     computed:{
-        fixedTitle(){
+        shortcutList () {
+            return this.data.map((group) => {
+            return group.title.substr(0, 1)
+            })
+        },
+        fixedTitle() {
             if(this.scrollY>0){
                 return ''
             }
@@ -109,12 +114,11 @@ export default{
             //在字母入口的事件  手指开始移动 的位置
             //console.log(e)
             let firsttouch=e.touches[0];//获取手指点击的位置
-            
             let attributeIndex=getData(e.target,'index')
             this.touch.y1=firsttouch.pageY
             this.touch.attributeIndex=attributeIndex//记录一开始点击时字母的索引
-             this._scrollTo(attributeIndex)
-             console.log(attributeIndex,firsttouch.pageY)
+            this._scrollTo(attributeIndex)
+             //console.log(attributeIndex,firsttouch.pageY)
         },
         onTouchmove(e){
             //在字母入口的事件  手指移动时
@@ -123,7 +127,7 @@ export default{
             //获取是指移动的Y轴距离
             let dataA=(this.touch.y2-this.touch.y1)/ANCHOR_HEIGHT |0
             let attributeIndex =parseInt(this.touch.attributeIndex)+dataA
-            console.log(attributeIndex,firsttouch.pageY)
+            //console.log(attributeIndex,firsttouch.pageY)
             this._scrollTo(attributeIndex)
         },
          refresh () {
@@ -162,8 +166,9 @@ export default{
                 index=this.listHeight.length-2
             }
             //console.log(index,this.listHeight)
-            this.scrollY=this.$refs.listview.scroll.y
+           
             this.$refs.listview.scrollToElement(this.$refs.listGrounp[index],0)
+            this.scrollY=this.$refs.listview.scroll.y
         },
     },
     watch:{
