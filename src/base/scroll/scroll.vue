@@ -19,7 +19,7 @@
                 type:Array,
                 default:null
             },
-            linstenscroll:{//scroll是否去监听scroll事件
+            linstenScroll :{//scroll是否去监听scroll事件
                 type:Boolean,
                 default:false
             }
@@ -38,7 +38,7 @@
                     probeType:this.probeType,
                     click:this.click
                 })
-                if(this.linstenscroll){
+                if(this.linstenScroll){
                     let me=this
                     this.scroll.on('scroll',(pos)=>{
                         me.$emit('scroll',pos)

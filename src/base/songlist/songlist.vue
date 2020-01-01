@@ -1,7 +1,9 @@
 <template><!--歌手的歌单列表组件--->
     <div class="song-list">
         <ul class="ul">
-            <li v-for="(item,index) in song" :key="index" class="list">
+            <li @click="selectItem(item,index)" 
+                v-for="(item,index) in song" 
+                :key="index" class="list">
                 <div class="content">
                     <div class="listname">{{item.name}}</div>
                     <div class="listtext">{{item.singer}} · {{item.album}}</div>
@@ -15,6 +17,12 @@
     export default{
         props:{
             song:Array
+        },
+        methods:{
+            selectItem(item,index){
+                //向父组件gendanlist.vue传值，点击的歌曲和坐标
+                this.$emit("select",item,index)
+            }
         }
     }
 </script>

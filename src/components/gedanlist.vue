@@ -23,8 +23,8 @@
                 :prober-type="proberType"
                 @scroll="scroll"
                 >
-            <div class="songlist-wrapper" ref="songlistwrapper">
-                <song-list :song="song"></song-list>
+            <div class="songlist-wrapper">
+                <song-list :song="song" @select="selectItem()"></song-list>
             </div>
             <div class="loading-container" v-show="!song.length">
                 <loading></loading>
@@ -37,6 +37,8 @@ import Scroll from '../base/scroll/scroll'
 import Loading from '../base/loading/loading'
 import SongList from '../base/songlist/songlist'
 import { prefixStyle } from 'common/js/dom'
+import {mapActions} from "vuex"
+
 const RESERVED_HEIGHT = 40
 const transform = prefixStyle('transform')
 const backdrop = prefixStyle('backdrop-filter')
@@ -66,13 +68,6 @@ export default{
         image:String,
         song:Array
     },
-    data(){
-        return{
-                scrollY:0,
-            // list:[],
-           // id:this.$route.params.id,//将URL地址中传递过来的ID值，直接挂载在data上，方便以后调用
-        }
-    },
     mounted(){
         this.imageHeight = this.$refs.bgImage.clientHeight
         this.minTransalteY = -this.imageHeight+ RESERVED_HEIGHT //最小滚动高
@@ -82,8 +77,19 @@ export default{
         random(){
             //点击  随机播放按钮
         },
+        selectItem(item,index){
+            //item,index是从子组件songlist.vue传过来的
+            this.selectPlay({
+                list:this.song,
+                index
+            })
+        },
+        ...mapActions([
+             "selectPlay"   
+        ]),
         scroll(pos){
             this.scrollY=pos.y
+            console.log(pos.y)
         },
         goback(){
             this.$router.go(-1)
@@ -94,14 +100,16 @@ export default{
             let zIndex=0;
             let scale = 1;
             let blur = 0;
-            if (newVal > 0) {
+            const percent = Math.abs(newY / this.imageHeight);//绝对值
+            let translateY = Math.max(this.minTransalteY,newY);
+            console.log(newY,this.imageHeight,percent)
+            if (newY > 0) {//下拉时，计算scale
                 scale = 1 + percent
-                zIndex = 10
+                zIndex = 10;
             } else {
                 blur = Math.min(20, percent * 20)
             }
-            let translateY = Math.max(this.minTransalteY,newY);
-            const percent = Math.abs(newVal / this.imageHeight)
+            
             this.$refs.layer.style[transform] = `translate3d(0,${translateY}px,0)`
             this.$refs.filter.style[backdrop] = `blur(${blur}px)`
             if(newY<this.minTransalteY){
@@ -199,6 +207,10 @@ export default{
             background:$color-banckground
             .songlist-wrapper
                 padding: 20px 30px
-                          
+            .loading-container
+                position: absolute
+                width: 100%
+                top: 50%
+                transform: translateY(-50%)              
 </style>
 

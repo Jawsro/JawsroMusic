@@ -45,9 +45,9 @@ import { getSingerList } from 'api/singer'
             _getSingerlist(){
                 getSingerList().then((res) => {
                     if (res.code === ERR_OK) {
-                        console.log(res.data.list)
+                        //console.log(res.data.list)
                         this.SingerList = this.geshoulist(res.data.list)
-                        console.log(this.SingerList)
+                        //console.log(this.SingerList)
                     }
                 })
             },

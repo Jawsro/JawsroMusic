@@ -13,7 +13,6 @@ import store from "./store"
 
 FastClick.attach(document.body)
 Vue.use(Vant)
-Vue.use(VueLazyload)
 Vue.config.productionTip = false
 
 import 'common/stylus/index.styl'
