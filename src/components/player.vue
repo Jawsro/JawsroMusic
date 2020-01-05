@@ -37,7 +37,7 @@
                             <i class="icon-prev"></i>
                         </div>
                         <div class="icon i-center">
-                            <img src="../assets/stop.png" alt="">
+                            <img src="../assets/stop.png" alt="" @click="goplaying()">
                             <i class="icon-pley"></i>
                         </div>
                         <div class="icon i-right">
@@ -70,7 +70,7 @@
                 </div>
             </div>
         </transition>
-        <audio :src="currentSong.url"></audio>
+        <audio :src="currentSong.url" ref="audio"></audio>
     </div>
 </template>
 <script>
@@ -88,16 +88,21 @@ export default{
             "fullScreen",
             "playlist",
             "currentSong",
-            "currentIndex"
-            
+            "currentIndex",
+            "playing"
         ])
     },
     methods:{
+        goplaying(){
+            //歌曲播放暂停功能
+            this.setPlayingState(!this.playing)//调用方法
+        },
         aa(){
-            console.log(this.currentSong,this.playlist)
+            console.log(this.currentSong,this.playlist,this.currentIndex)
         },
         ...mapMutations({
-            setFullScreen:"SET_FULL_SCREEN"
+            setFullScreen:"SET_FULL_SCREEN",
+            setPlayingState:"SET_PLAYING_STATE"//全局播放函数调用
         }),
         back(){
             this.setFullScreen(false)
@@ -162,6 +167,20 @@ export default{
             y,
             scale
             }
+        }
+    },
+    watch:{
+        currentSong(){
+            //延时，操作dom
+            this.$nextTick(()=>{
+                this.$refs.audio.play()
+            })
+            
+        },
+        playing(newPlaying){//监听当前的播放状态
+            const audio=this.$refs.audio;
+            //newPlaying 保存此时播放的状态
+            newPlaying ? audio.play() : audio.pause()
         }
     }
 

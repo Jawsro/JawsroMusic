@@ -2,7 +2,7 @@
   <div id="app">
     <m-header></m-header>
     <tab></tab>
-    <keep-alive exclude="Gedanlist">
+    <keep-alive >
       <!--   exclude="Gedanlist"  name的值-->
       <router-view/>
     </keep-alive>

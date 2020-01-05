@@ -58,24 +58,30 @@ export function getSongsUrl (songs) {
         if (res.code === ERR_OK) {
           let urlMid = res.req_0
           if (urlMid && urlMid.code === ERR_OK) {
-            const purlMap = {}
-            urlMid.data.midurlinfo.forEach((item) => {
-              if (item.purl) {
-                purlMap[item.songmid] = item.purl
+            //  const info = urlMid.data.midurlinfo[0]
+            // if (info && info.purl) {
+            //   resolve(urlMid.data.midurlinfo)
+          
+            const purlMap={}
+            urlMid.data.midurlinfo.forEach((item)=>{
+              if(item.url){
+                purlMap[item.songmid] =item.purl
               }
             })
-            if (Object.keys(purlMap).length > 0) {
+            if(Object.keys(purlMap).length>0){
               resolve(purlMap)
-            } else {
+            }else {
               retry()
             }
-          } else {
-            retry()
-          }
+          
         } else {
           retry()
         }
+
+          }
+        
       })
+
     }
 
     function retry () {

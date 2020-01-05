@@ -18,7 +18,7 @@
                         <li class="list" 
                             v-for="(item,index) in group.items" 
                             :key="index"
-                            @click="selectitem(item)"
+                            @click="selectItem(item)"
                             >
                             <div class="img">
                                 <img v-lazy="item.url" alt="">
@@ -105,10 +105,10 @@ export default{
         this.probeType=3
     },
     methods:{
-        selectitem(item){
-            //跳转到歌手详情列表
+        selectItem(item){
+            //跳转到歌手详情列表 传值给父组件gedanlist.vue
             this.$emit('select',item)
-           //console.log(item)
+           console.log(item)
         },
         onTouchstart(e){
             //在字母入口的事件  手指开始移动 的位置

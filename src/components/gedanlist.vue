@@ -20,11 +20,11 @@
                 class="songlist" 
                 ref="songlist"
                 :linsten-scroll="linstenScroll"
-                :prober-type="proberType"
+                :probe-type="probeType"
                 @scroll="scroll"
                 >
             <div class="songlist-wrapper">
-                <song-list :song="song" @select="selectItem()"></song-list>
+                <song-list :song="song" @select="selectItem"></song-list>
             </div>
             <div class="loading-container" v-show="!song.length">
                 <loading></loading>
@@ -58,7 +58,7 @@ export default{
         // this.touch={}//不需要监听数据的变化，可以直接在creadted中定义
         this.linstenScroll=true
         // this.listHeight=[]
-        this.proberType=3
+        this.probeType=3
     },
     props:{
         name:{

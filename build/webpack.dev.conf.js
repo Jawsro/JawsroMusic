@@ -4,6 +4,7 @@ const webpack = require('webpack')
 const config = require('../config')
 const merge = require('webpack-merge')
 const path = require('path')
+const bodyParser=require('body-parser')
 const baseWebpackConfig = require('./webpack.base.conf')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -86,20 +87,20 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       //   })
       // })
 
-      // app.post('/api/getPurlUrl', bodyParser.json(), function (req, res) {
-      //   const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
-      //   axios.post(url, req.body, {
-      //     headers: {
-      //       referer: 'https://y.qq.com/',
-      //       origin: 'https://y.qq.com',
-      //       'Content-type': 'application/x-www-form-urlencoded'
-      //     }
-      //   }).then((response) => {
-      //     res.json(response.data)
-      //   }).catch((e) => {
-      //     console.log(e)
-      //   })
-      // })
+      app.post('/api/getPurlUrl', bodyParser.json(), function (req, res) {
+        const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
+        axios.post(url, req.body, {
+          headers: {
+            referer: 'https://y.qq.com/',
+            origin: 'https://y.qq.com',
+            'Content-type': 'application/x-www-form-urlencoded'
+          }
+        }).then((response) => {
+          res.json(response.data)
+        }).catch((e) => {
+          console.log(e)
+        })
+      })
 
       // app.get('/api/search', function (req, res) {
       //   const url = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
