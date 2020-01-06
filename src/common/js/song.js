@@ -66,11 +66,11 @@ export function processSongsUrl (songs) {
     return Promise.resolve(songs)
   }
 
-  return getSongsUrl(songs).then((midUrlInfo) => {
+  return getSongsUrl(songs).then((purlMap) => {
     // midUrlInfo.forEach((info,index)=>{
     //   let song=songs[index]
     //   song.url=info.purl.indexOf('http')=== -1 ? `http://dl.stream.qqmusic.qq.com/${info.purl}` : info.purl
-   songs=songs/filter((song)=>{
+   songs=songs.filter((song)=>{
      const purl=purlMap[song.mid]
      if(purl){
        song.url=purl.indxOf('http')=== -1 ? `http://dl.stream.qqmusic.qq.com/${purl}` : purl
