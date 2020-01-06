@@ -64,7 +64,7 @@ export function getSongsUrl (songs) {
           
             const purlMap={}
             urlMid.data.midurlinfo.forEach((item)=>{
-              if(item.url){
+              if(item.purl){
                 purlMap[item.songmid] =item.purl
               }
             })
