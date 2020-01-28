@@ -17,7 +17,6 @@ export function getLyric (mid) {
     pcachetime: +new Date(),
     format: 'json'
   })
-
   return axios.get(url, {
     params: data
   }).then((res) => {
@@ -61,10 +60,10 @@ export function getSongsUrl (songs) {
             //  const info = urlMid.data.midurlinfo[0]
             // if (info && info.purl) {
             //   resolve(urlMid.data.midurlinfo)
-          
-            const purlMap={}
+            // }
+           const purlMap={}
             urlMid.data.midurlinfo.forEach((item)=>{
-              if(item.url){
+              if(item.purl){
                 purlMap[item.songmid] =item.purl
               }
             })
@@ -78,6 +77,8 @@ export function getSongsUrl (songs) {
           retry()
         }
 
+          }else {
+            retry()
           }
         
       })

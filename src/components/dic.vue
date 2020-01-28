@@ -9,8 +9,9 @@
 import {mapGetters} from'vuex'
 import { ERR_OK } from '../api/config'
 import GedanList from './gedanlist'
-import { createSong} from 'common/js/song'
+import { createSong,processSongsUrl ,isValidMusic} from 'common/js/song'
 import { getSongList } from 'api/recommend'
+import {mapMutations} from'vuex'
     export default{
         components:{
             GedanList
@@ -25,21 +26,13 @@ import { getSongList } from 'api/recommend'
         computed:{
             ...mapGetters([
                 'disc'
-            ]),
-            // name(){
-            //     //this.name1=this.singer.name
-            //    console.log( this.singer.name)
-            // },
-            // image(){
-            //    // this.image1=this.singer.url
-            //    console.log( this.singer.url)
-            // }
+            ])
         },
         created(){
            //console.log(this.disc)
             this.geta()
-             this.image1=this.disc.imgurl
-             this.name1=this.disc.dissname
+            this.image1=this.disc.imgurl
+            this.name1=this.disc.dissname
         },
         methods:{
            geta(){ 
@@ -50,24 +43,22 @@ import { getSongList } from 'api/recommend'
                getSongList(this.disc.dissid)
                .then((res) => {
                     if (res.code === ERR_OK){
-                        console.log(res.cdlist[0].songlist)
-                         this.song=this._normalizeSongs(res.cdlist[0].songlist)
-                        //  processSongsUrl(this._normalizeSongs(res.cdlist[0].songlist)).then((songs) => {
-                        //     this.song= songs
-                        // })
+                         processSongsUrl(this._normalizeSongs(res.cdlist[0].songlist)).then((songs)=>{
+                             this.song=songs
+                             console.log(this.song)
+                         })
+                         
+                        
                     }
                 })
            },
            _normalizeSongs (list) {
             let ret = []
             list.forEach((musicData) => {
-            // if (isValidMusic(musicData)) {
-            //     ret.push(createSong(musicData))
-            // }, isValidMusic, processSongsUrl 
             if(musicData.songid && musicData.albumid){
                 ret.push(createSong(musicData))
             }
-            })
+             })
             return ret
         }
         }

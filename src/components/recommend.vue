@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" ref="recommend">
     <scroll ref="scroll" class="recommend-con" :data="gedanList">
       <div>
         <van-swipe :autoplay="3000">
@@ -42,7 +42,9 @@ import Loading from '../base/loading/loading'
 import { getRecommend, getDiscList } from 'api/recommend'
 import { ERR_OK } from 'api/config'
 import { mapMutations } from 'vuex'
+import { playlistMixin } from 'common/js/mixin'
 export default {
+   mixins:[playlistMixin],
   data() {
       return {
         gedanList:[],//歌单列表
@@ -58,25 +60,27 @@ export default {
     this.getPicUrl();
   },
   methods:{
+    handlePlaylist (playlist) {
+      //底部迷你播放器的自适应
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.recommend.style.bottom = bottom
+      //调用refresh()该方法重新刷新一次
+      this.$refs.scroll.refresh()
+    },
     gotoGedanlist(item){
-      console.log(item)
+      //console.log(item)
       this.$router.push({
         path:`/recommend/${item.dissid}`
       })
      this.setDisc(item)
     },
     getPicUrl(){
-      // this.$ajax.get("http://ustbhuangyi.com/music/api/getDiscList?g_tk=1928093487&inCharset=utf-8&outCharset=utf-8&notice=0&format=json&platform=yqq&hostUin=0&sin=0&ein=29&sortId=5&needNewCode=0&categoryId=10000000&rnd=0.7699859451579913")
-      // .then(res=>{
-      //   //console.log(res.data.data.list)
-      //   this.gedanList=res.data.data.list
-      // })
-       getRecommend().then((res) => {
-          if (res.code === ERR_OK) {
-            //console.log(res.data.slider)
-            this.PicUrl = res.data.slider
-          }
-        })
+      getRecommend().then((res) => {
+        if (res.code === ERR_OK) {
+          //console.log(res.data.slider)
+          this.PicUrl = res.data.slider
+        }
+      })
     },
     getList(){
        getDiscList().then((res) => {

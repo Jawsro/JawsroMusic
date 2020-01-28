@@ -1,4 +1,5 @@
 <template>
+    <!--//歌手详情列表 singer.vue 子路由-->
     <transition name="slide">
         <div class="singer-detail">
            <gedan-list :name='name1' :image="image1" :song="song"></gedan-list>
@@ -10,7 +11,7 @@ import {mapGetters} from'vuex'
 import { getSingerDetail } from '../api/singer'
 import { ERR_OK } from '../api/config'
 import GedanList from './gedanlist'
-import {createSong} from 'common/js/song'
+import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
     export default{
         components:{
             GedanList
@@ -26,20 +27,12 @@ import {createSong} from 'common/js/song'
             ...mapGetters([
                 'singer'
             ]),
-            // name(){
-            //     //this.name1=this.singer.name
-            //    console.log( this.singer.name)
-            // },
-            // image(){
-            //    // this.image1=this.singer.url
-            //    console.log( this.singer.url)
-            // }
         },
         created(){
             console.log(this.singer)
             this.geta()
-             this.image1=this.singer.url
-             this.name1=this.singer.name
+            this.image1=this.singer.url
+            this.name1=this.singer.name
         },
         methods:{
            geta(){ 
@@ -50,26 +43,26 @@ import {createSong} from 'common/js/song'
                getSingerDetail(this.singer.id)
                .then((res) => {
                     if (res.code === ERR_OK){
-                       //console.log(res.data.list)
-                       let list=res.data.list;
-                       let arr=[]
-                        // for(let i in list){
-                        //     //console.log(list[i],i)
-                        //     arr.push(list[i].musicData)
-                            
-                        // }
-                        list.forEach((item)=>{
-                            let {musicData}=item
-                            if(musicData.songid && musicData.albummid){
-                                arr.push(createSong(musicData))
-                            }
+                        console.log(res.data.list)
+                        processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
+                            this.song = songs
+                            console.log(this.song)
                         })
-                        //console.log(arr)
-                        this.song=arr
+                        
                     }
          
-        })
-           }
+                })
+           },
+            _normalizeSongs (list) {
+                let ret = []
+                list.forEach((item) => {
+                    let { musicData } = item
+                    if (isValidMusic(musicData)) {
+                        ret.push(createSong(musicData))
+                    }
+                })
+                return ret
+            }
         }
     }
 </script>

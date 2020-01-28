@@ -8,7 +8,7 @@
             {{name}}
         </div>
         <div class="banner" :style="{backgroundImage:'url('+image+')'}"  ref="bgImage">
-            <div class="play-wrapper">
+            <div class="play-wrapper" @click="randomplay">
                 <div ref="playBtn" v-show="song.length>0" class="play" @click="random">
                     <span class="text">随机播放全部</span>
                 </div>
@@ -24,7 +24,7 @@
                 @scroll="scroll"
                 >
             <div class="songlist-wrapper">
-                <song-list :song="song" @select="selectItem"></song-list>
+                <song-list :rank="rank" :song="song" @select="selectItem"></song-list>
             </div>
             <div class="loading-container" v-show="!song.length">
                 <loading></loading>
@@ -37,6 +37,7 @@ import Scroll from '../base/scroll/scroll'
 import Loading from '../base/loading/loading'
 import SongList from '../base/songlist/songlist'
 import { prefixStyle } from 'common/js/dom'
+import { playlistMixin } from 'common/js/mixin'
 import {mapActions} from "vuex"
 
 const RESERVED_HEIGHT = 40
@@ -44,6 +45,7 @@ const transform = prefixStyle('transform')
 const backdrop = prefixStyle('backdrop-filter')
 export default{
     name:"Gedanlist",
+    mixins:[playlistMixin],
     components:{
         Scroll,
         SongList,
@@ -66,7 +68,8 @@ export default{
             default:""
         },
         image:String,
-        song:Array
+        song:Array,
+        rank:Boolean
     },
     mounted(){
         this.imageHeight = this.$refs.bgImage.clientHeight
@@ -74,6 +77,12 @@ export default{
         this.$refs.songlist.$el.style.top = `${this.imageHeight}px`
     },
     methods:{
+        handlePlaylist(playlist){
+            const bottom =playlist.length>0 ?"60px":""
+            this.$refs.songlist.$el.style.bottom=bottom
+            //调用refresh()该方法重新刷新一次
+            this.$refs.songlist.refresh()
+        },
         random(){
             //点击  随机播放按钮
         },
@@ -85,11 +94,12 @@ export default{
             })
         },
         ...mapActions([
-             "selectPlay"   
+             "selectPlay",
+             "randomplay"  
         ]),
         scroll(pos){
             this.scrollY=pos.y
-            console.log(pos.y)
+            //console.log(pos.y)
         },
         goback(){
             this.$router.go(-1)
@@ -102,7 +112,7 @@ export default{
             let blur = 0;
             const percent = Math.abs(newY / this.imageHeight);//绝对值
             let translateY = Math.max(this.minTransalteY,newY);
-            console.log(newY,this.imageHeight,percent)
+            //console.log(newY,this.imageHeight,percent)
             if (newY > 0) {//下拉时，计算scale
                 scale = 1 + percent
                 zIndex = 10;

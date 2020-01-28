@@ -5,8 +5,7 @@
     </div>
 </template>
 <script>
-// import Scroll from '../base/scroll/scroll'
-//import Loading from '../base/singer/singerlist'
+import { playlistMixin } from 'common/js/mixin'
 import Singer from 'common/js/singer'
 import SingerView from '../base/singer/singerlist'
 import {mapMutations} from'vuex'
@@ -16,6 +15,7 @@ import { getSingerList } from 'api/singer'
     const HOT_SINGER_LEN=10;
 
     export default{
+        mixins:[playlistMixin],
         components:{
             // Scroll,
             // Loading

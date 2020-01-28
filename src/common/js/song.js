@@ -1,5 +1,6 @@
 import { getLyric, getSongsUrl } from 'api/song'
 import { ERR_OK } from 'api/config'
+import { Base64 } from 'js-base64'
 export default class Song {//class 面向对象的编程方式
   constructor ({ id, mid, singer, name, album, duration, image, url }) {
     this.id = id
@@ -14,6 +15,7 @@ export default class Song {//class 面向对象的编程方式
   }
 
   getLyric () {
+    //已经有lyric
     if (this.lyric) {
       return Promise.resolve(this.lyric)
     }
@@ -21,6 +23,7 @@ export default class Song {//class 面向对象的编程方式
     return new Promise((resolve, reject) => {
       getLyric(this.mid).then((res) => {
         if (res.retcode === ERR_OK) {
+          //Base64.decode 转码
           this.lyric = Base64.decode(res.lyric)
           resolve(this.lyric)
         } else {
@@ -41,12 +44,10 @@ export function createSong (musicData) {
     duration: musicData.interval,
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
     url: musicData.url
-    //url:`http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
-    //url:`http://aqqmusic.tc.qq.com/amobile.music.tc.qq.com/${musicData.songid}.m4a?guid=9747642858&vkey=6347991B0DCBCBB2F71B393ADE00BD24B44F34BFD22A5205F2300C94C018DB0C61F99D89B824EC3783BF2458D91341E0DF220EC5C6AD4F20&uin=0&fromtag=38`
   })
 }
 
-function filterSinger (singer) {//将singer转化成字符串
+ function filterSinger (singer) {//将singer转化成字符串
   let ret = []
   if (!singer) {
     return ''
@@ -65,15 +66,11 @@ export function processSongsUrl (songs) {
   if (!songs.length) {
     return Promise.resolve(songs)
   }
-
-  return getSongsUrl(songs).then((midUrlInfo) => {
-    // midUrlInfo.forEach((info,index)=>{
-    //   let song=songs[index]
-    //   song.url=info.purl.indexOf('http')=== -1 ? `http://dl.stream.qqmusic.qq.com/${info.purl}` : info.purl
-   songs=songs/filter((song)=>{
+  return getSongsUrl(songs).then((purlMap) => {
+    songs=songs.filter((song)=>{
      const purl=purlMap[song.mid]
      if(purl){
-       song.url=purl.indxOf('http')=== -1 ? `http://dl.stream.qqmusic.qq.com/${purl}` : purl
+       song.url=purl.indexOf('http')=== -1 ? `http://dl.stream.qqmusic.qq.com/${purl}` : purl
        return true
     }
     return false

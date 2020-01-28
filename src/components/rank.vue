@@ -1,8 +1,9 @@
 <template>
-    <div class="rank">
-        <scroll class="toplist" :data="topList">
+<!-- 排行榜 -->
+    <div class="rank" ref="rank">
+        <scroll class="toplist" :data="topList" ref="toplist">
             <ul>
-                <li class="item" v-for="(item,index) in topList" :key="index">
+                <li class="item" v-for="(item,index) in topList" :key="index" @click="selectItem(item)">
                     <div class="left-img">
                         <img v-lazy="item.picUrl" alt="" class="img">
                     </div>
@@ -18,6 +19,7 @@
                 <loading></loading>
             </div>
         </scroll>
+        <router-view/>
     </div>
 </template>
 <script>
@@ -25,7 +27,10 @@ import { getTopList } from 'api/rank'
 import Scroll from '../base/scroll/scroll'
 import Loading from '../base/loading/loading'
 import { ERR_OK } from 'api/config'
+import { playlistMixin } from 'common/js/mixin'
+import {mapMutations} from'vuex'
 export default{
+    mixins:[playlistMixin],
     components:{
         Scroll,
         Loading
@@ -39,6 +44,21 @@ export default{
         this._getTopList()
     },
     methods:{
+         ...mapMutations({
+            setTopList: 'SET_TOP_LIST'
+        }),
+        selectItem(item){
+            this.$router.push({
+                path:`/rank/${item.id}`
+            })
+            this.setTopList(item)
+        },
+        handlePlaylist(playlist){
+            const bottom =playlist.length>0 ?"60px":""
+            this.$refs.rank.style.bottom=bottom
+            //调用refresh()该方法重新刷新一次
+            this.$refs.toplist.refresh()
+        },
         _getTopList(){
             getTopList().then(res=>{
                 console.log(res.data.topList)

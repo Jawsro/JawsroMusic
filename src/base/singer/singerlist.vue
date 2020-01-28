@@ -130,6 +130,7 @@ export default{
             //console.log(attributeIndex,firsttouch.pageY)
             this._scrollTo(attributeIndex)
         },
+        //singer.vue
          refresh () {
             this.$refs.listview.refresh()
         },

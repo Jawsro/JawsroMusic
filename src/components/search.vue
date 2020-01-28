@@ -1,47 +1,67 @@
 <template>
-    <div class="rank">
-        <scroll class="toplist" :data="topList">
-            <ul>
-                <li class="item" v-for="(item,index) in topList" :key="index">
-                    <div class="left-img">
-                        <img v-lazy="item.picUrl" alt="" class="img">
-                    </div>
-                    <ul class="songlist">
-                        <li class="song" v-for="(list,index) in item.songList" :key="index">
-                            <span>{{index+1}}</span>
-                            <span>{{list.songname}}——{{list.singername}}</span>
+    <div class="search">
+        <div class="search-box-wrapper">
+            <search-box ref="searchbox" @query="queryChange"></search-box>
+        </div>
+        <div class="shortcut-wrapper" v-show="!query">
+            <div class="shortcut">
+                <div class="hot-key">
+                    <h1 class="title">热门搜索</h1>
+                    <ul>
+                        <li class="item"
+                            v-for="(item,index) in hotKey"
+                            :key="index"
+                            @click="addQuery(item.k)">
+                            <span>
+                                {{item.k}}
+                            </span>
                         </li>
                     </ul>
-                </li>
-            </ul>
-            <div class="loading-container" v-show="!topList.length">
-                <loading></loading>
+                </div>
             </div>
-        </scroll>
+        </div>
+        <div class="search-result" v-show="query">
+            <search-list :query="query"></search-list>
+        </div>
+        <router-view />
     </div>
 </template>
 <script>
-import { getTopList } from 'api/rank'
-import Scroll from '../base/scroll/scroll'
-import Loading from '../base/loading/loading'
+import SearchBox from '../base/search-box/search-box'
+import { getHotKey } from 'api/search'
+import { ERR_OK } from 'api/config'
+import SearchList from"../components/searchlist"
 export default{
     components:{
-        Scroll,
-        Loading
+        SearchBox,
+       SearchList
     },
     data(){
         return{
-            topList:[]
+            hotKey:[],
+            query:""
         }
     },
     created(){
-        this._getTopList()
+        this._getHotKey()
     },
     methods:{
-        _getTopList(){
-            getTopList().then(res=>{
-                //console.log(res.data.topList)
-                this.topList=res.data.topList
+        queryChange(query){
+            this.query=query
+        },
+        //点击关键词，同步到搜素框
+        //setQuery()  调用search-box.vue里面的方法
+        addQuery(query){
+            this.$refs.searchbox.setQuery(query)
+            
+        },
+        _getHotKey(){
+            getHotKey().then((res)=>{
+                if(res.code===ERR_OK){
+                    //console.log(res.data.hotkey)
+                    this.hotKey=res.data.hotkey.slice(0,8)
+                    //console.log(this.hotKey)
+                }
             })
         }
     }
@@ -50,45 +70,33 @@ export default{
 <style scoped lang="stylus">
 @import "~common/stylus/variable.styl"
 @import "~common/stylus/mixin.styl"
-    .rank
+    .search-result
         position: fixed
-        top: 88px
-        bottom: 0
         width: 100%
-        .toplist
+        top: 178px
+        bottom: 0
+    .search-box-wrapper
+        margin:20px
+    .shortcut-wrapper
+        position:fixed
+        top:178px 
+        bottom:0
+        width:100%
+        .shortcut
             height:100%
             overflow:hidden
-            .item
-                display:flex
-                margin:0 20px
-                padding-top:20px
-                height:100px
-                &:last-child
-                    padding-bottom: 20px
-                .left-img
-                    flex:0 0 100px
-                    width:100px
-                    height: 100px
-                    .img
-                        width:100%
-                        height:100%
-                .songlist
-                    flex:1
-                    display:flex
-                    flex-direction: column
-                    justify-content: center
-                    padding:0 20px
-                    height:100px
-                    overflow:hidden
-                    background:$color-highlight-banckground
+            .hot-key
+                margin:0 20px 20px
+                .title
+                    margin-bottom:20px 
+                    font-size:$font-size-medium
+                    color:$color-text-l
+                .item
+                    display:inline-block
+                    padding:5px 10px
+                    margin:0 20px 10px 0 
+                    border-radius :6px
+                    background:$color-highlight-banckground 
+                    font-size:$font-size-medium
                     color:$color-text-d
-                    font-size:$font-size-small
-                    .song
-                        no-wrap()
-                        line-height:26px
-            .loading-container
-                position: absolute
-                width: 100%
-                top: 50%
-                transform: translateY(-50%)
 </style>

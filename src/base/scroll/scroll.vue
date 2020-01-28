@@ -22,6 +22,10 @@
             linstenScroll :{//scroll是否去监听scroll事件
                 type:Boolean,
                 default:false
+            },
+            pullup:{//上拉刷新
+                type:Boolean,
+                default:false
             }
         },
         mounted(){
@@ -42,6 +46,15 @@
                     let me=this
                     this.scroll.on('scroll',(pos)=>{
                         me.$emit('scroll',pos)
+                    })
+                }
+                if(this.pullup){
+                    //scrollEnd表示scroll停止了
+                    //scrollToEn表示滚动到底部了
+                     this.scroll.on('scrollEnd',()=>{
+                        if(this.scroll.y <= (this.scroll.maxScrollY + 50)){
+                             this.$emit('scrollToEnd')
+                        }
                     })
                 }
             },
