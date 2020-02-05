@@ -53,7 +53,6 @@
                     <div class="dot-wrapper">
                         <span class="dot" :class="{'active' :currentShow=== 'cd'}"></span>
                         <span class="dot" :class="{'active' :currentShow=== 'lyric'}"></span>
-                        
                     </div>
                     <div class="progress-wrapper">
                         <span class="item item-l">{{format(currentTime)}}</span>
@@ -115,7 +114,7 @@
         </play-list>
         <audio :src="currentSong.url" 
                 ref="audio"
-                @canplay="ready"
+                @play="ready"
                 @error="error"
                 @timeupdate="updateTime"
                 @ended="end"></audio>
@@ -229,8 +228,8 @@ export default{
             //滑动的距离超过10%
                 if(this.touch.percent>0.1){
                     offsetWidth =-window.innerWidth
-                    this.currentShow="lyric"
                     opacity=0
+                    this.currentShow="lyric"
                 }else{
                     offsetWidth=0
                     opacity=1
@@ -254,6 +253,9 @@ export default{
         },
         getLyric(){
             this.currentSong.getLyric().then((lyric)=>{
+                if(this.currentSong.lyric!==lyric){
+                    return
+                }
                 this.currentLyric=new Lyric(lyric,this.handleLyric)
                 //console.log(this.currentLyric)
                 if(this.playing){
@@ -308,6 +310,7 @@ export default{
             }
             if(this.playlist.length ===1){
                 this.loop()
+                return
             }else{
             let index=this.currentIndex-1
             if(index===-1){
@@ -329,6 +332,7 @@ export default{
             //判断歌曲列表只有一首歌的情况，单曲循环
             if(this.playlist.length ===1){
                 this.loop()
+                return
             }else{
             let index=this.currentIndex+1
             if(index===this.playlist.length){
@@ -466,8 +470,10 @@ export default{
                 this.playingLyric = ''
                 this.currentLineNum = 0
             }
+            //清除定时器，只执行最后一次定时器内的操作
+            clearTimeout(this.timer)
             //延时，操作dom
-            setTimeout(()=>{
+            this.timer=setTimeout(()=>{
                 this.$refs.audio.play()
                 this.getLyric()
                 console.log()
