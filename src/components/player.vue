@@ -67,23 +67,20 @@
                     <div class="operators">
                         <div class="icon i-left" @click="changeMode">
                             <img :src="iconMode" alt="">
-                            <i class="icon-sequence"></i>
                         </div>
                         <div class="icon i-left">
                             <img src="../assets/left.png" alt="" @click="prev()" :class="disableClass">
-                            <i class="icon-prev"></i>
                         </div>
                         <div class="icon i-center">
                             <img :src="playImg" alt="" @click="goplaying()" :class="disableClass">
-                            <i class="icon-pley"></i>
                         </div>
                         <div class="icon i-right">
                             <img src="../assets/right.png" alt="" @click="next()" :class="disableClass">
-                            <i class="icon-next"></i>
                         </div>
-                        <div class="icon i-right" @click="aa()">
-                            <img src="../assets/sc0.png" alt="">
-                            <i class="icon icon-not-favorite"></i>
+                        <div class="icon i-right">
+                            <img :src="getFavoriteImg(currentSong)"
+                                alt=""
+                                @click="togoFavoriteImg(currentSong)">
                         </div>
                     </div>
                 </div>
@@ -105,14 +102,19 @@
                         <img :src="miniplay" class="icon-mini" alt="" @click.stop="goplaying()">
                     </progress-circle>
                 </div>
-                <div class="control">
+                <div class="control" @click.stop="showPlaylist">
                     <img src="../assets/list.png" alt="" class="icon-mini2">
-                    <i class="icon-playlist"></i>
                 </div>
             </div>
         </transition>
+        <play-list ref="playlist" 
+            :sequenceList="sequenceList"
+            :currentSong="currentSong"
+            :playlist="playlist"
+            :mode="mode">
+        </play-list>
         <audio :src="currentSong.url" 
-                ref="audio" 
+                ref="audio"
                 @canplay="ready"
                 @error="error"
                 @timeupdate="updateTime"
@@ -121,7 +123,8 @@
 </template>
 <script>
 import Scroll from '../base/scroll/scroll'
-import {mapGetters,mapMutations} from "vuex"
+import PlayList from"../components/playlist"
+import {mapGetters,mapMutations,mapActions} from "vuex"
 import animations from 'create-keyframe-animation'
 import { prefixStyle } from 'common/js/dom'
 import { playMode } from 'common/js/config'
@@ -130,13 +133,16 @@ import { getLyric } from 'api/song'
 import Lyric from 'lyric-parser'
 import ProgressBar from '../base/progress-bar/progress-bar'
 import ProgressCircle from '../base/progress-circle/progress-circle'
+import { playerMixin } from 'common/js/mixin'
 const transform = prefixStyle('transform')
 const transitionDuration = prefixStyle('transitionDuration')
 export default{
+    mixins:[playerMixin],
     components:{
         ProgressBar,
         ProgressCircle,
-        Scroll
+        Scroll,
+        PlayList
     },
     data(){
         return{
@@ -154,10 +160,10 @@ export default{
         this.touch={}//挂在共享对象
     },
     computed:{//计算
-        //根据播放状态来判断播放暂停的小图标 和图片的旋转
-        iconMode(){
-            return this.mode ===playMode.sequence ? require("../assets/sj.png") : (this.mode ===playMode.loop ? require("../assets/1.png") :require("../assets/0.png"))
-        },
+        // //根据播放状态来判断播放暂停的小图标 和图片的旋转
+        // iconMode(){
+        //     return this.mode ===playMode.sequence ? require("../assets/sj.png") : (this.mode ===playMode.loop ? require("../assets/1.png") :require("../assets/0.png"))
+        // },
         playImg(){
             return this.playing ? require("../assets/stop1.png") : require("../assets/stop.png")
         },
@@ -175,15 +181,18 @@ export default{
         },
         ...mapGetters([
             "fullScreen",
-            "playlist",
-            "currentSong",
-            "currentIndex",
             "playing",
-            "mode",
-            "sequenceList"
+            "currentIndex",
+            // "currentSong",
+            // "playlist",
+            // "mode",
+            // "sequenceList"
         ])
     },
     methods:{
+        showPlaylist(){
+            this.$refs.playlist.show()
+        },
         middleTouchStart(e){
             //已经初始化
             this.touch.initiated=true
@@ -269,27 +278,7 @@ export default{
             }
             this.playingLyric =txt
         },
-        changeMode(){
-            //切换播放顺序
-            const mode=(this.mode+1)%3
-            this.setPlayMode(mode)
-            let list=null
-            if(mode===playMode.random){
-                //如果是随机播放
-                list=shuffle(this.sequenceList)
-            }else{
-                list=this.sequenceList
-            }
-            this.resetCurrentIndex(list)
-            //传给vuex，修改全局变量
-            this.setPlaylist(list)
-        },
-        resetCurrentIndex(list){
-            let index=list.findIndex((item)=>{
-                return item.id===this.currentSong.id
-            })
-            this.setCurrentIndex(index)
-        },
+       
         onProgressBarChange(percent){
             //设置当前 进度条的时间        当前歌曲总时长
             const currentTime=this.currentSong.duration * percent
@@ -365,6 +354,7 @@ export default{
         },
         ready(){
             this.songReady=true
+            this.savePlayHistory(this.currentSong)
         },
         error(){
             this.songReady=true
@@ -384,16 +374,16 @@ export default{
                 this.currentLyric.seek(0)
             }
         },
-        aa(){
-            console.log(this.currentSong,this.playlist,this.currentIndex)
-        },
         ...mapMutations({
             setFullScreen:"SET_FULL_SCREEN",
-            setPlayingState:"SET_PLAYING_STATE",//全局播放函数调用
-            setCurrentIndex:"SET_CURRENT_INDEX",
-            setPlayMode:"SET_PLAY_MODE",
-            setPlaylist:"SET_PLAYLIST"
+            //setPlayingState:"SET_PLAYING_STATE",//全局播放函数调用
+            //setCurrentIndex:"SET_CURRENT_INDEX",
+            //setPlayMode:"SET_PLAY_MODE",
+            //setPlaylist:"SET_PLAYLIST"
         }),
+        ...mapActions([
+            'savePlayHistory'
+        ]),
         back(){
             this.setFullScreen(false)
         },
@@ -461,6 +451,9 @@ export default{
     },
     watch:{
         currentSong(newSong,oldSong){
+            if(!newSong.id){
+                return
+            }
             //歌曲id不变，不操作
             if(newSong.id===oldSong.id){
                 return

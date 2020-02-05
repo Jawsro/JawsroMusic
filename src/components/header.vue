@@ -1,8 +1,12 @@
 <template>
     <div class="header">
-        <div class="icon">
-        </div>
+        <div class="icon"></div>
         <div class="text">Music</div>
+        <router-link to="/user" 
+            class="main" 
+            tag="div">
+            <img src="../assets/user.png" alt="">    
+        </router-link>
     </div>
 </template>
 <script>
@@ -28,5 +32,11 @@
             vertical-align :top
             line-height: 44px
             font-size: $font-size-large-x
-            
+        .main
+            position:absolute
+            right:12px
+            top:12px
+            img
+                width:20px
+                height:20px   
 </style>

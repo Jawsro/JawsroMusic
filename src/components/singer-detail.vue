@@ -29,7 +29,7 @@ import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
             ]),
         },
         created(){
-            console.log(this.singer)
+            //console.log(this.singer)
             this.geta()
             this.image1=this.singer.url
             this.name1=this.singer.name
@@ -43,10 +43,10 @@ import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
                getSingerDetail(this.singer.id)
                .then((res) => {
                     if (res.code === ERR_OK){
-                        console.log(res.data.list)
+                        //console.log(res.data.list)
                         processSongsUrl(this._normalizeSongs(res.data.list)).then((songs) => {
                             this.song = songs
-                            console.log(this.song)
+                            //console.log(this.song)
                         })
                         
                     }

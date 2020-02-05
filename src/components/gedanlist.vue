@@ -84,7 +84,11 @@ export default{
             this.$refs.songlist.refresh()
         },
         random(){
+            console.log(111)
             //点击  随机播放按钮
+            this.randomplay({
+                list: this.song
+            })
         },
         selectItem(item,index){
             //item,index是从子组件songlist.vue传过来的

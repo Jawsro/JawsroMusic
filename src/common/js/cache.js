@@ -1,11 +1,14 @@
 import storage from 'good-storage'
 const SEARCH_KEY = '__search__'
+//所搜历史记录的最多条数
 const SEARCH_MAX_LEN = 15
 
 const PLAY_KEY = '__play__'
+//存储播放历史记录的条数
 const PLAY_MAX_LEN = 200
 
 const FAVORITE_KEY = '__favorite__'
+//收藏的条数
 const FAVORITE_MAX_LEN = 200
 
 function insertArray (arr, val, compare, maxLen) {
@@ -69,6 +72,7 @@ export function loadPlay () {
   return storage.get(PLAY_KEY, [])
 }
 
+//收藏的歌曲
 export function saveFavorite (song) {
   let songs = storage.get(FAVORITE_KEY, [])
   insertArray(songs, song, (item) => {

@@ -4,13 +4,15 @@
         <img src="../../assets/search.png" alt="" class="icon-search"/>
         <input type="text" class="box" 
             :placeholder="placeholder"
-            v-model="query">
+            v-model="query"
+            ref="query">
         <img src="../../assets/dismiss.png"
              alt="" class="dismiss"
              v-show="query" @click="clear"/>
     </div>
 </template>
 <script>
+import {debounce} from "common/js/utill"
 export default {
     data(){
         return{
@@ -29,13 +31,17 @@ export default {
         },
         setQuery(query){
             this.query=query
+        },
+        blur(){
+            this.$refs.query.blur()
         }
     },
     created(){
         //向外派发参数
-        this.$watch("query",(newQuery)=>{
+        //debounce节流
+        this.$watch("query",debounce((newQuery)=>{
             this.$emit("query",newQuery)
-        })
+        },200))
     },
 }
 </script>

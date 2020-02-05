@@ -1,4 +1,4 @@
-<template><!--歌手的歌单列表组件--->
+<template><!--歌手的歌单列表组件-->
     <div class="song-list">
         <ul class="ul">
             <li @click="selectItem(item,index)" 

@@ -78,15 +78,15 @@ export const insertSong = function ({ commit, state }, song) {
 export const saveSearchHistory = function ({ commit }, query) {
   commit(types.SET_SEARCH_HISTORY, saveSearch(query))
 }
-
+//删除历史记录中的一个
 export const deleteSearchHistory = function ({ commit }, query) {
   commit(types.SET_SEARCH_HISTORY, deleteSearch(query))
 }
-
+//清除历史记录
 export const clearSearchHistory = function ({ commit }) {
   commit(types.SET_SEARCH_HISTORY, clearSearch())
 }
-
+//删除列表中的歌曲
 export const deleteSong = function ({ commit, state }, song) {
   let playlist = state.playlist.slice()
   let sequenceList = state.sequenceList.slice()
@@ -106,6 +106,7 @@ export const deleteSong = function ({ commit, state }, song) {
   if (!playlist.length) {
     commit(types.SET_PLAYING_STATE, false)
   } else {
+    //删除后状态切换
     commit(types.SET_PLAYING_STATE, true)
   }
 }
@@ -116,15 +117,15 @@ export const deleteSongList = function ({ commit }) {
   commit(types.SET_SEQUENCE_LIST, [])
   commit(types.SET_PLAYING_STATE, false)
 }
-
+//播放历史
 export const savePlayHistory = function ({ commit }, song) {
   commit(types.SET_PLAY_HISTORY, savePlay(song))
 }
-
+//点击收藏
 export const saveFavoriteList = function ({ commit }, song) {
   commit(types.SET_FAVORITE_LIST, saveFavorite(song))
 }
-
+//删除收藏
 export const deleteFavoriteList = function ({ commit }, song) {
   commit(types.SET_FAVORITE_LIST, deleteFavorite(song))
 }

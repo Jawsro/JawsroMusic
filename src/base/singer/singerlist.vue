@@ -108,7 +108,7 @@ export default{
         selectItem(item){
             //跳转到歌手详情列表 传值给父组件gedanlist.vue
             this.$emit('select',item)
-           console.log(item)
+           //console.log(item)
         },
         onTouchstart(e){
             //在字母入口的事件  手指开始移动 的位置

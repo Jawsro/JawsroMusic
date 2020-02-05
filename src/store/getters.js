@@ -23,13 +23,13 @@ export const currentSong = (state)=> {
 export const topList =state =>state.topList
 
 export const searchHistory = state => state.searchHistory
-
+//播放记录
 export const playHistory = (state) => {
   return state.playHistory.map((song) => {
     return new Song(song)
   })
 }
-
+//收藏记录
 export const favoriteList = (state) => {
   return state.favoriteList.map((song) => {
     return new Song(song)

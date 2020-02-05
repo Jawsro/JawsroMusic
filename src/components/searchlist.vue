@@ -3,7 +3,9 @@
     <scroll class="searchlist" 
         :data="result" 
         :pullup="pullup"
+        :beforeScroll="beforeScroll"
         @scrollToEnd="searchMore"
+        @beforeScroll="listScroll"
         ref="searchlist">
         <ul class="search-list">
             <li class="item" 
@@ -19,11 +21,15 @@
             </li>
             <loading v-show="hasMore" title=""></loading>
         </ul>
+        <div class="no-result-wrapper" v-show="!hasMore && !result.length">
+            <no-result title="抱歉，暂无搜索结果"></no-result>
+        </div>
     </scroll>
 </template>
 <script>
 import Scroll from '../base/scroll/scroll'
 import Loading from '../base/loading/loading'
+import NoResult from '../base/no-result/no-result'
 import { search } from 'api/search'
 import { ERR_OK } from 'api/config'
 import {createSong,processSongsUrl,isValidMusic} from 'common/js/song'
@@ -34,7 +40,8 @@ const perpage=20
 export default {
     components:{
        Scroll,
-       Loading
+       Loading,
+       NoResult
     },
     props:{
         query:{//检索词
@@ -51,6 +58,7 @@ export default {
             page:1,
             result:[],
             pullup:true,
+            beforeScroll:true,
             hasMore:true
         }
     },
@@ -58,6 +66,13 @@ export default {
         ...mapActions([
             'insertSong'
         ]),
+        listScroll(){
+            this.$emit('listScroll')
+        },
+        refresh(){
+            //调用refresh()该方法重新刷新一次
+            this.$refs.searchlist.refresh()
+        },
         selectItem(item){
             //判断，如果是歌手，调至歌手详情页
             if(item.type=== TYPE_SINGER){
@@ -72,6 +87,7 @@ export default {
             }else{
                 this.insertSong(item)
             }
+            this.$emit("select")
         },
         getIconCls(item){
             if (item.type === TYPE_SINGER) {
