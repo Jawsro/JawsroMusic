@@ -30,7 +30,7 @@ export default{
     methods:{
         progressClick(e){
             //点击进度条，经跳到相应的进度
-            console.log(e)
+            //console.log(e)
             //当点击progressBtn时，
             const rect = this.$refs.progressBar.getBoundingClientRect()
             const offsetWidth = e.pageX - rect.left

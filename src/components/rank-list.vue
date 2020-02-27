@@ -49,7 +49,7 @@ export default{
             getMusicList(this.topList.id).then((res)=>{
                  processSongsUrl(this._normalizeSongs(res.songlist)).then((songs)=>{
                     this.song=songs
-                    console.log(this.song)
+                    //console.log(this.song)
                 })
             })
         },

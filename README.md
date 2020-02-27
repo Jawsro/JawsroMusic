@@ -40,3 +40,4 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 //错误原因：函数名和actions.js的命名相同 
 //随机播放未实现
 //2020.2.5已解决
+//优化播放器内核2020.2.5

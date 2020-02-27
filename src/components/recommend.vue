@@ -115,7 +115,7 @@ export default {
         position:absolute
         width:100%
         top:50%
-        transform:translateY(-50%)
+        transform:translateY(50%)
       .van-swipe
         width: 100%
         height: 150px

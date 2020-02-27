@@ -8,7 +8,7 @@
             {{name}}
         </div>
         <div class="banner" :style="{backgroundImage:'url('+image+')'}"  ref="bgImage">
-            <div class="play-wrapper" @click="randomplay">
+            <div class="play-wrapper">
                 <div ref="playBtn" v-show="song.length>0" class="play" @click="random">
                     <span class="text">随机播放全部</span>
                 </div>
@@ -84,10 +84,9 @@ export default{
             this.$refs.songlist.refresh()
         },
         random(){
-            console.log(111)
             //点击  随机播放按钮
             this.randomplay({
-                list: this.song
+                list:this.song
             })
         },
         selectItem(item,index){

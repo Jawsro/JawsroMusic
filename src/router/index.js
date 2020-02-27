@@ -5,7 +5,6 @@ import Recommend from '../../src/components/recommend.vue'//推荐页面 默认
 import Search from '../../src/components/search.vue'//搜索
 import Singer from '../../src/components/singer.vue'//歌手
 import SingerDetail from '../../src/components/singer-detail.vue'//歌手详情列表
-// import Gedanlist from '../../src/components/gedanlist.vue'//歌单分类列表
 import Dic from '../../src/components/dic.vue'//热门歌单子路由
 import RankList from '../../src/components/rank-list.vue'//排行榜子路由
 import UserCenter from '../../src/components/user-center.vue'//个人中心

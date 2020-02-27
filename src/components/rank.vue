@@ -61,7 +61,7 @@ export default{
         },
         _getTopList(){
             getTopList().then(res=>{
-                console.log(res.data.topList)
+                //console.log(res.data.topList)
                 this.topList=res.data.topList
             })
         }

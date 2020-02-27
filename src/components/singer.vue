@@ -1,4 +1,5 @@
 <template>
+    <!-- 歌手列表页面 -->
     <div class="singer"  ref="singer">
     <singer-view :data="SingerList" ref="list" @select="selectSinger"></singer-view>
     <router-view/>

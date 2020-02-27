@@ -1,4 +1,6 @@
 <template>
+    <!--app.vue引入-->
+    <!--播放器页面-->
     <div class="player" v-show="playlist.length>0">
         <transition name="normal"
             @enter="enter"
@@ -12,7 +14,6 @@
                 <div class="top">
                     <div class="back" @click="back()">
                         <img src="../assets/down.png" alt="">
-                        <i class="icon-back"></i>
                     </div>
                     <h1 class="title" v-html="currentSong.name"></h1>
                     <h2 class="subtitle" v-html="currentSong.singer"></h2>
@@ -238,7 +239,7 @@ export default{
             //滑动的距离不超过80%
                 if(this.touch.percent<0.9){
                     offsetWidth=0
-                    this.currentShow==='cd'
+                    this.currentShow='cd'
                     opacity=1
                 }else{
                     offsetWidth =-window.innerWidth 
@@ -476,7 +477,6 @@ export default{
             this.timer=setTimeout(()=>{
                 this.$refs.audio.play()
                 this.getLyric()
-                console.log()
             },1000)
             
         },

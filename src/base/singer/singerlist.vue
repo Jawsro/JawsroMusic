@@ -1,5 +1,6 @@
 <template>
-<!-- 歌手列表组件 -->
+    <!-- 歌手列表组件 -->
+    <!-- singer.vue引入 -->
     <scroll class="singer-container" 
             :data="data" 
             ref="listview"
@@ -8,6 +9,7 @@
             @scroll="scroll"
             >
         <div>
+        <!--左侧歌手列表-->
             <ul class="ul">
                 <li v-for="(group,index) in data" 
                     :key="index" 
@@ -30,7 +32,7 @@
                 </li>
             </ul>
         </div>
-        
+        <!--右侧字母入口-->
         <div class="alist" 
             @touchstart.stop.prevent="onTouchstart"
             @touchmove.stop.prevent="onTouchmove"

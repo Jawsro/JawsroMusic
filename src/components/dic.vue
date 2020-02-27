@@ -45,7 +45,7 @@ import {mapMutations} from'vuex'
                     if (res.code === ERR_OK){
                          processSongsUrl(this._normalizeSongs(res.cdlist[0].songlist)).then((songs)=>{
                              this.song=songs
-                             console.log(this.song)
+                            // console.log(this.song)
                          })
                          
                         

@@ -1,4 +1,5 @@
 <template>
+<!--app.vue引入-->
     <div class="tab">
         <router-link tag="div" to="/recommend" class="tab-item">
             <span class="tab-link"> 推荐</span>

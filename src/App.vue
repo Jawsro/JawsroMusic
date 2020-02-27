@@ -1,4 +1,4 @@
-<template><!--// // -->
+<template>
   <div id="app">
     <m-header></m-header>
     <tab></tab>

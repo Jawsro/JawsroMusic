@@ -1,10 +1,12 @@
 <template>
+    <!--app.vue引入-->
     <div class="header">
         <div class="icon"></div>
         <div class="text">Music</div>
         <router-link to="/user" 
             class="main" 
-            tag="div">
+            tag="div"
+        >
             <img src="../assets/user.png" alt="">    
         </router-link>
     </div>
